@@ -1,0 +1,6 @@
+Flask
+Flask-PyMongo
+pymongo
+transformers
+torch
+Werkzeug
