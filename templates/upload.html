@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Preparation Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Your Resume and Job Description</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="resume">Resume (PDF, DOCX, or TXT):</label>
+        <input type="file" id="resume" name="resume" accept=".pdf, .docx, .txt" required>
+
+        <label for="job_description">Job Description (PDF, DOCX, or TXT):</label>
+        <input type="file" id="job_description" name="job_description" accept=".pdf, .docx, .txt" required>
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const formData = new FormData(this); // Create a FormData object
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const data = await response.json();
+                document.getElementById('result').innerText = 
+                    'Generated Questions:\n' + data.questions;
+
+            } catch (error) {
+                document.getElementById('result').innerText = 
+                    'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
