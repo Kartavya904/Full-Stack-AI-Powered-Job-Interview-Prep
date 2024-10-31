@@ -1,24 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from werkzeug.security import generate_password_hash, check_password_hash
+from PyPDF2 import PdfReader
+from docx import Document
+from bson import ObjectId
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Necessary for flash messages
+app.secret_key = 'your_secret_key'
 
 # MongoDB Configuration
 uri = "mongodb+srv://kartavyasingh17:aRduRaLkLvV5zumt@resumedrive.hwagf.mongodb.net/?retryWrites=true&w=majority&appName=ResumeDrive"
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["ResumeDriveDB"]
 login_data_collection = db["loginData"]
-
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
 
 # Route for Home Page
 @app.route('/')
@@ -35,10 +31,7 @@ def dashboard():
         flash("Please log in to access the dashboard.")
         return redirect(url_for("home"))
     
-    user = {
-        "first_name": session.get("first_name"),
-        "last_name": session.get("last_name")
-    }
+    user = login_data_collection.find_one({"_id": ObjectId(session["user_id"])})
     return render_template("dashboard.html", user=user)
 
 # Signup Route
@@ -49,22 +42,25 @@ def signup():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # Check if the email already exists in the database
     existing_user = login_data_collection.find_one({"email": email})
     
     if existing_user:
         flash("Email already exists. Please try a different one.")
         return redirect(url_for("home"))
     
-    # Hash the password for security
     hashed_password = generate_password_hash(password)
 
-    # Insert new user data into MongoDB
     login_data_collection.insert_one({
         "first_name": first_name,
         "last_name": last_name,
         "email": email,
-        "password": hashed_password
+        "password": hashed_password,
+        "resumeName": "",
+        "resumeText": "",
+        "coverName": "",
+        "coverText": "",
+        "otherName": "",
+        "otherText": ""
     })
     
     flash("Sign up successful! You can now log in.")
@@ -76,16 +72,14 @@ def login():
     email = request.form.get("email")
     password = request.form.get("password")
     
-    # Find user by email
     user = login_data_collection.find_one({"email": email})
     
     if user and check_password_hash(user["password"], password):
-        # Store user information in session
         session['user_id'] = str(user["_id"])
         session['first_name'] = user["first_name"]
         session['last_name'] = user["last_name"]
         flash("Login successful!")
-        return redirect(url_for("dashboard"))  # Redirect to /dashboard
+        return redirect(url_for("dashboard"))
     else:
         flash("Invalid email or password.")
         return redirect(url_for("home"))
@@ -93,9 +87,27 @@ def login():
 # Logout Route
 @app.route('/logout')
 def logout():
-    session.clear()  # Clear all session data
+    session.clear()
     flash("You have been logged out.")
     return redirect(url_for("home"))
+
+# Utility to check allowed file types
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'docx'}
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Utility to process documents
+def extract_text_from_file(file_path):
+    if file_path.endswith('.pdf'):
+        with open(file_path, 'rb') as file:
+            reader = PdfReader(file)
+            return "".join([page.extract_text() for page in reader.pages]).strip()
+    elif file_path.endswith('.docx'):
+        doc = Document(file_path)
+        return "\n".join([para.text for para in doc.paragraphs]).strip()
+    else:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read().strip()
 
 # Route for Profile Page
 @app.route('/profile', methods=['GET', 'POST'])
@@ -121,6 +133,37 @@ def profile():
         return redirect(url_for("profile"))
 
     return render_template('profile.html', user=user)
+
+# Upload documents route
+@app.route('/upload', methods=['POST'])
+def upload_files():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in to upload files."}), 403
+
+    upload_type = request.form.get("upload_type")
+    file = request.files.get("file")
+    
+    if upload_type not in ["resume", "cover", "other"] or not file or not allowed_file(file.filename):
+        return jsonify({"error": "Invalid upload type or file"}), 400
+
+    file_path = os.path.join("uploads", file.filename)
+    if not os.path.exists("uploads"):
+        os.makedirs("uploads")
+    file.save(file_path)
+
+    file_text = extract_text_from_file(file_path)
+
+    update_data = {}
+    if upload_type == "resume":
+        update_data = {"resumeName": file.filename, "resumeText": file_text}
+    elif upload_type == "cover":
+        update_data = {"coverName": file.filename, "coverText": file_text}
+    elif upload_type == "other":
+        update_data = {"otherName": file.filename, "otherText": file_text}
+
+    login_data_collection.update_one({"_id": ObjectId(session["user_id"])}, {"$set": update_data})
+
+    return jsonify({"success": True, "message": f"{upload_type.capitalize()} uploaded successfully."})
 
 if __name__ == '__main__':
     app.run(debug=True)
