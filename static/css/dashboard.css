@@ -1,76 +1,110 @@
-/* dashboard.css */
-
-/* General Styles */
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
+/* Reset and General Styling */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-/* Navbar */
-.navbar {
-    border-bottom: 2px solid #007bff;
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0d2a42, #0a1d30);
+    color: #ffffff;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Container */
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+}
+
+/* Dashboard Header Section */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0a1d30;
     padding: 1rem 2rem;
+    border-bottom: 1px solid #5fd4ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    margin-bottom: 2rem;
 }
 
-.navbar-brand {
-    color: #007bff;
+/* Project Name Styling */
+.project-name {
+    color: #5fd4ff;
     font-size: 1.5rem;
     font-weight: bold;
     text-transform: uppercase;
-}
-
-.navbar-brand:hover {
-    color: #0056b3;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
+.project-name:hover {
+    color: #00aaff;
+}
+
+/* Dashboard Title */
+.dashboard-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    flex: 1;
+}
+
+/* Profile Circle */
 .profile-circle {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background-color: #007bff;
-    color: white;
+    background-color: #5fd4ff;
+    color: #0a1d30;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
     font-weight: bold;
+    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .profile-circle:hover {
-    background-color: #0056b3;
+    background-color: #00aaff;
 }
 
-/* Main Dashboard Heading */
-.container h1 {
-    color: #333;
-    font-weight: 600;
+/* Section Headings */
+.container h1,
+.upload-form h2,
+.job-description h2 {
+    color: #5fd4ff;
+    font-weight: 700;
+    text-align: center;
     margin-bottom: 1.5rem;
-    font-size: 2.2rem;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 /* Document Upload Section */
-.upload-form {
-    background-color: #ffffff;
+.upload-form, 
+.job-description {
+    background-color: #1a1d27;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.upload-form h2 {
-    color: #007bff;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    margin-bottom: 2rem;
 }
 
 .upload-form label,
 .existing-documents h3 {
-    color: #333;
+    color: #d1d4db;
     font-weight: 500;
 }
 
@@ -79,90 +113,100 @@ body {
 .btn-upload {
     font-size: 1rem;
     padding: 0.75rem;
+    background-color: #2a2f3b;
+    color: #ffffff;
+    border: 1px solid #5fd4ff;
+    border-radius: 5px;
+}
+
+.form-select:focus,
+.form-control:focus {
+    outline: none;
+    border-color: #00aaff;
+    box-shadow: 0 0 5px rgba(95, 212, 255, 0.4);
 }
 
 .existing-documents {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #3b3e47;
     margin-top: 1.5rem;
     padding-top: 1rem;
-    color: #666;
+    color: #b0b3bd;
 }
 
 .existing-documents h3 {
-    color: #007bff;
+    color: #5fd4ff;
+    font-size: 1.2rem;
 }
 
-.btn-upload {
-    background-color: #007bff;
-    color: #fff;
-    font-weight: 500;
-    border: none;
-    margin-top: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.btn-upload:hover {
-    background-color: #0056b3;
-}
-
-/* Job Description Section */
-.job-description {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-top: 2rem;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.job-description h2 {
-    color: #007bff;
+/* Button Styling */
+.btn-upload,
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #5fd4ff);
+    color: #ffffff;
     font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    margin-top: 1rem;
 }
 
+.btn-upload:hover,
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5fd4ff, #007bff);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Job Description Textarea */
 #job_description {
-    border: 1px solid #ddd;
+    background-color: #2a2f3b;
+    border: 1px solid #5fd4ff;
     border-radius: 6px;
     padding: 1rem;
     font-size: 1rem;
-    color: #333;
+    color: #ffffff;
     resize: vertical;
     transition: border-color 0.3s ease;
+    margin-top: 1rem;
 }
 
 #job_description:focus {
-    border-color: #007bff;
+    border-color: #00aaff;
     outline: none;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-    font-weight: 500;
-    padding: 0.6rem 1.2rem;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
+    box-shadow: 0 0 8px rgba(95, 212, 255, 0.3);
 }
 
 /* Combined Text Display */
 #combinedTextResult {
-    background-color: #e9ecef;
-    border-radius: 6px;
+    background-color: #2a2f3b;
+    border-radius: 10px;
     padding: 1rem;
     font-size: 1rem;
-    color: #333;
+    color: #d1d4db;
     margin-top: 1.5rem;
     white-space: pre-wrap;
     line-height: 1.5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .navbar-brand,
-    .container h1 {
-        font-size: 1.4rem;
+    .dashboard-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        font-size: 1.3rem;
+        margin-top: 1rem;
+    }
+
+    .project-name {
+        font-size: 1.2rem;
     }
 
     .upload-form,

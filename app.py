@@ -120,24 +120,70 @@ def profile():
     if "user_id" not in session:
         flash("Please log in to access your profile.")
         return redirect(url_for("home"))
-    
+
     user_id = session['user_id']
-    user = login_data_collection.find_one({"_id": user_id})
+    user = login_data_collection.find_one({"_id": ObjectId(user_id)})
 
     if request.method == 'POST':
-        # Update user data in MongoDB
-        login_data_collection.update_one(
-            {"_id": user_id},
-            {"$set": {
-                "first_name": request.form.get("first_name"),
-                "last_name": request.form.get("last_name"),
-                "email": request.form.get("email")
-            }}
-        )
-        flash("Profile updated successfully.")
-        return redirect(url_for("profile"))
+        # Edit Profile Logic
+        if 'first_name' in request.form:
+            first_name = request.form.get("first_name")
+            last_name = request.form.get("last_name")
+            login_data_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {
+                "first_name": first_name, "last_name": last_name
+            }})
+            flash("Profile updated successfully.")
+        
+        # Update Password Logic
+        elif 'current_password' in request.form:
+            current_password = request.form.get("current_password")
+            new_password = request.form.get("new_password")
+            if check_password_hash(user["password"], current_password):
+                login_data_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {
+                    "password": generate_password_hash(new_password)
+                }})
+                session.clear()
+                flash("Password updated successfully. Please log in again.")
+                return redirect(url_for("home"))
+            else:
+                flash("Incorrect current password.")
+
+        # Replace Document Logic
+        elif 'replace_document' in request.form:
+            replace_document = request.form.get("replace_document")
+            file = request.files.get("file")
+            file_path = os.path.join("uploads", file.filename)
+            file.save(file_path)
+            text = extract_text_from_file(file_path)  # Assuming a utility function
+
+            update_data = {}
+            if replace_document == "resume":
+                update_data = {"resumeName": file.filename, "resumeText": text}
+            elif replace_document == "cover":
+                update_data = {"coverName": file.filename, "coverText": text}
+            elif replace_document == "other":
+                update_data = {"otherName": file.filename, "otherText": text}
+
+            login_data_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
+            flash(f"{replace_document.capitalize()} updated successfully.")
 
     return render_template('profile.html', user=user)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    if "user_id" not in session:
+        flash("Please log in to delete your account.")
+        return redirect(url_for("home"))
+    
+    user_id = session['user_id']
+    
+    # Delete the user from the database
+    login_data_collection.delete_one({"_id": ObjectId(user_id)})
+    
+    # Clear session and redirect to home
+    session.clear()
+    flash("Your account has been deleted successfully.")
+    return redirect(url_for("home"))
 
 # Upload documents route
 @app.route('/upload', methods=['POST'])

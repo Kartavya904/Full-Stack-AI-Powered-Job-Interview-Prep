@@ -9,9 +9,11 @@ body {
     font-family: 'Poppins', sans-serif;
     background: url('../images/bg.jpg') no-repeat center center fixed;
     background-size: cover;
-    color: #333;
+    color: #fff;
+    overflow-x: hidden;
 }
 
+/* Hero Section */
 .hero-section {
     height: 100vh;
     position: relative;
@@ -19,6 +21,7 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    background: linear-gradient(135deg, #0d2a42, #0a1d30);
 }
 
 .hero-section .overlay {
@@ -27,28 +30,52 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(18, 41, 83, 0.8);
+    background: rgba(13, 42, 66, 0.85);
 }
 
 .hero-section .content {
     position: relative;
     z-index: 1;
-    color: #f0f0f0;
+    color: #ffffff;
     padding: 20px;
 }
 
 .hero-section h1 {
     font-size: 3.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
-    color: #76c7c0;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.2rem;
+    color: #5fd4ff;
+    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+    animation: fadeInDown 1s ease;
 }
 
 .hero-section p {
-    font-size: 1.3rem;
-    margin-bottom: 2rem;
-    color: #f0f0f0;
+    font-size: 1.2rem;
+    margin-bottom: 2.5rem;
+    color: #e8f7ff;
+    animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .button-group {
@@ -57,69 +84,145 @@ body {
     gap: 1.5rem;
 }
 
-.btn-signup, .btn-login {
-    background: linear-gradient(135deg, #76c7c0, #57b2ad);
-    color: white;
-    padding: 10px 25px;
-    border-radius: 25px;
+.btn-signup, .btn-login, .btn-get-started {
+    background: linear-gradient(135deg, #007bff, #00aaff);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 30px;
     font-weight: 600;
     font-size: 1.1rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
 }
 
-.btn-signup:hover, .btn-login:hover {
-    background: #1e2a48;
-    color: #76c7c0;
+.btn-signup:hover, .btn-login:hover, .btn-get-started:hover {
+    background: #005f99;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Features Section */
+.features {
+    padding: 4rem 0;
+    text-align: center;
+    color: #fff;
+    background: #1a1d27;
+}
+
+.features h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #5fd4ff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.feature-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.feature-box {
+    width: 300px;
+    padding: 1.5rem;
+    background: #2a2f3b;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.feature-box h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: #5fd4ff;
+}
+
+.feature-box p {
+    font-size: 1rem;
+    color: #b0b3bd;
+}
+
+/* Get Started Button */
+.btn-get-started {
+    background: linear-gradient(135deg, #5fd4ff, #007bff);
+    color: white;
+    padding: 15px 40px;
+    font-weight: bold;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    margin-top: 2rem;
+    text-transform: uppercase;
+}
+
+.btn-get-started:hover {
+    background: linear-gradient(135deg, #007bff, #5fd4ff);
     transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
+/* Modal Styling */
 .modal-content {
     border-radius: 10px;
+    background: #2a2f3b;
     border: none;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    color: #fff;
 }
 
 .modal-header {
-    border-bottom: 2px solid #76c7c0;
+    border-bottom: 2px solid #5fd4ff;
 }
 
 .modal-title {
-    font-weight: 600;
-    color: #76c7c0;
+    font-weight: 700;
+    color: #5fd4ff;
 }
 
 .input-field {
     border-radius: 6px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    transition: border-color 0.2s ease;
+    border: 1px solid #444;
+    background: #333;
+    color: #fff;
+    padding: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-field:focus {
-    border-color: #76c7c0;
-    box-shadow: 0 0 5px rgba(118, 199, 192, 0.3);
+    border-color: #5fd4ff;
+    box-shadow: 0 0 8px rgba(95, 212, 255, 0.3);
 }
 
 .btn-submit {
-    background: #76c7c0;
+    background: #007bff;
     border: none;
     border-radius: 25px;
     font-size: 1rem;
     font-weight: 600;
     padding: 10px 30px;
-    transition: background-color 0.3s ease, transform 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
 }
 
 .btn-submit:hover {
-    background-color: #57b2ad;
+    background-color: #5fd4ff;
     transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* Switch link */
 .switch-link {
-    color: #76c7c0;
+    color: #5fd4ff;
     cursor: pointer;
     display: block;
     font-weight: 600;
@@ -127,6 +230,17 @@ body {
     text-align: center;
 }
 
-.features, .upload-section {
-    /* Additional content styling */
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    background: #0a1d30;
+    color: #a3cce0;
+    font-size: 0.9rem;
+}
+
+footer .heart {
+    color: #e74c3c;
+    font-size: 1.1rem;
+    vertical-align: middle;
 }
