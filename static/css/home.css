@@ -1,15 +1,132 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    background: url('../images/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
     color: #333;
 }
 
-h1 {
-    color: #0056b3;
+.hero-section {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
 }
 
-p {
+.hero-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 41, 83, 0.8);
+}
+
+.hero-section .content {
+    position: relative;
+    z-index: 1;
+    color: #f0f0f0;
+    padding: 20px;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #76c7c0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    color: #f0f0f0;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.btn-signup, .btn-login {
+    background: linear-gradient(135deg, #76c7c0, #57b2ad);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-signup:hover, .btn-login:hover {
+    background: #1e2a48;
+    color: #76c7c0;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    border-bottom: 2px solid #76c7c0;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: #76c7c0;
+}
+
+.input-field {
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    transition: border-color 0.2s ease;
+}
+
+.input-field:focus {
+    border-color: #76c7c0;
+    box-shadow: 0 0 5px rgba(118, 199, 192, 0.3);
+}
+
+.btn-submit {
+    background: #76c7c0;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 10px 30px;
+    transition: background-color 0.3s ease, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-submit:hover {
+    background-color: #57b2ad;
+    transform: scale(1.05);
+}
+
+.switch-link {
+    color: #76c7c0;
+    cursor: pointer;
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
     text-align: center;
-    font-size: 18px;
+}
+
+.features, .upload-section {
+    /* Additional content styling */
 }
