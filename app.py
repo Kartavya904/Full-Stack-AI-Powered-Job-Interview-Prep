@@ -11,6 +11,8 @@ import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 from NLP_Model.nlp import *
+from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM,GPT2Tokenizer
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -20,6 +22,12 @@ uri = "mongodb+srv://kartavyasingh17:aRduRaLkLvV5zumt@resumedrive.hwagf.mongodb.
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["ResumeDriveDB"]
 login_data_collection = db["loginData"]
+
+# Load a language model from Hugging Face (e.g., GPT-2)
+model_name = "gpt2"  # You can also try "EleutherAI/gpt-neo-125M" for a slightly more powerful model
+tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 # Utility functions
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'docx'}
@@ -248,19 +256,43 @@ def generate_keywords():
 
     if len(job_description.split()) < 50:
         return jsonify({"error": "Job description must be at least 50 words long."}), 400
-    
+
     # Check if there are any keywords in the database for this user
     if not extracted_keywords:
         return jsonify({"error": "No extracted keywords found for the resume. Please Re-Upload your Resume"}), 400
 
+    # Create prompt for OpenAI
+    keywords_formatted = ", ".join([f"{keyword}" for keyword in extracted_keywords.keys()])
+    prompt = (
+        f"Here is a job description for a Computer Science Internship/Position:\n{job_description}\n\n"
+        f"The most significant keywords and areas of strengths are:\n{keywords_formatted}\n\n"
+        f"Give me around 10 questions along with their answers that can be asked in the interview for this job post. "
+        f"Consider this interview to be very professional, and the questions should relate to the strengths and the job requirements."
+    )
 
-    combined_text = f"{resume_text}\n{cover_text}\n{job_description}"
-    # Format extracted keywords for display in retText
-    retText = "Extracted Keywords:\n\n"
-    for keyword, count in extracted_keywords.items():
-        retText += f"Keyword: {keyword.capitalize()}, Count: {count}\n"
+    # Tokenize the prompt
+    input_ids = tokenizer(prompt, return_tensors="pt")["input_ids"]
 
-    return jsonify({"combined_text": retText})
+    # Check if input length exceeds 1024 tokens and truncate if necessary
+    if input_ids.shape[1] > 1024:
+        # Calculate how many tokens to trim
+        excess_tokens = input_ids.shape[1] - 1024
+        # Truncate job_description to fit within 1024 tokens
+        job_description_tokens = tokenizer.encode(job_description)
+        trimmed_description = tokenizer.decode(job_description_tokens[:-excess_tokens])
+
+        # Recreate the prompt with the trimmed job description
+        prompt = (
+            f"Here is a job description for a Computer Science Internship/Position:\n{trimmed_description}\n\n"
+            f"The most significant keywords and areas of strengths are:\n{keywords_formatted}\n\n"
+            f"Give me around 10 questions along with their answers that can be asked in the interview for this job post. "
+            f"Consider this interview to be very professional, and the questions should relate to the strengths and the job requirements."
+        )
+
+    # Generate response with truncated prompt
+    response = generator(prompt, max_new_tokens=100, num_return_sequences=1)[0]["generated_text"]
+
+    return jsonify({"combined_text": response[len(prompt):].strip()})
 
 if __name__ == '__main__':
     app.run(debug=True)
