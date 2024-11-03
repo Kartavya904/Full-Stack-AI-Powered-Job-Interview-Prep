@@ -233,6 +233,13 @@ def upload_files():
     # Update the user's data in MongoDB
     login_data_collection.update_one({"_id": ObjectId(session["user_id"])}, {"$set": update_data})
 
+    # Delete the file after processing
+    os.remove(file_path)
+
+    # Delete the uploads folder if it's empty
+    if not os.listdir("uploads"):  # Check if the directory is empty
+        os.rmdir("uploads")  # Remove the directory if empty
+
     return jsonify({"success": True, "message": f"{upload_type.capitalize()} uploaded successfully."})
 
 @app.route('/generate', methods=['POST'])
@@ -291,8 +298,9 @@ def generate_keywords():
 
     # Generate response with truncated prompt
     response = generator(prompt, max_new_tokens=100, num_return_sequences=1)[0]["generated_text"]
-
+    print(response)
     return jsonify({"combined_text": response[len(prompt):].strip()})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == '__main__': 
+    app.run(debug=True, use_reloader=True, ) 
+ 
