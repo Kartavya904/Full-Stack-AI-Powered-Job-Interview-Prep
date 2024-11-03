@@ -1,7 +1,7 @@
 # AI-Powered Job Interview Prep Assistant
 
 ## Overview
-This project is designed to assist job seekers by generating interview questions based on the job description and user-provided documents (resume, cover letter). It also evaluates answers using Natural Language Processing (NLP) and provides feedback on clarity, confidence, and relevance. The platform suggests ideal answers based on the user’s documents and industry trends.
+This project is designed by Kartavya Singh to assist job seekers by generating interview questions based on the job description and user-provided documents (resume, cover letter). It also evaluates answers using Natural Language Processing (NLP) and provides feedback on clarity, confidence, and relevance. The platform suggests ideal answers based on the user’s documents and industry trends.
 
 ## Features
 - **User Authentication:** Login/Sign-up system with MongoDB for user data storage.
